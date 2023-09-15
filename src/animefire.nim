@@ -38,19 +38,16 @@ proc main(playlistUrls: seq[string]; outDir: string; bestQuality = true): bool =
   discard existsOrCreateDir outDir
   for url in playlistUrls:
     let animeDir = outDir / url.parseUri.path.after("animes/").escapeFs
-    if not dirExists animeDir:
-      echo "Downloading ", animeDir
-      createDir animeDir
-      for a in url.fetch.waitFor.parseHtml.querySelectorAll(".div_video_list a.divNumEp"):
-        let
-          url = a.attr("href").replace("/animes/", "/video/")
-          videos = parseJson waitFor fetch url
-          videoUrl = (if bestQuality: videos["data"][^1] else: videos["data"][0])["src"].getStr
-          name = url.after("video/") & ".mp4"
-        echo "  Downloading ", name
-        videoUrl.downloadFile animeDir / escapeFs name
-    else:
-      echo "Skipping " & animeDir
+    echo "Downloading ", animeDir
+    createDir animeDir
+    for a in url.fetch.waitFor.parseHtml.querySelectorAll(".div_video_list a.divNumEp"):
+      let
+        url = a.attr("href").replace("/animes/", "/video/")
+        videos = parseJson waitFor fetch url
+        videoUrl = (if bestQuality: videos["data"][^1] else: videos["data"][0])["src"].getStr
+        name = url.after("video/") & ".mp4"
+      echo "  Downloading ", name
+      videoUrl.downloadFile animeDir / escapeFs name
 
 when isMainModule:
   import pkg/cligen
