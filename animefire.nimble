@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.1"
+version       = "0.1.0"
 author        = "Thiago Navarro"
 description   = "AnimeFire downloader"
 license       = "GPL-3.0-or-later"
